@@ -111,3 +111,29 @@ func (br *bookRepo) GetAllBooks(ctx context.Context, req *bs.GetAllBooksRequest)
 
 	return &resp, nil
 }
+
+func (br *bookRepo) GetBookByID(ctx context.Context, req *bs.GetBookByIDRequest) (*bs.Book, error) {
+	var (
+		book bs.Book
+	)
+	query := `
+		SELECT (
+			id,
+			name,
+			author_id,
+			about,
+			isbn
+		)
+			FROM
+				books
+			WHERE
+				id=$1;
+	`
+
+	row := br.db.QueryRow(ctx, query, req.GetId())
+	if err := row.Scan(&book.Id, &book.Name, &book.AuthorId, &book.About, &book.Isbn); err != nil {
+		return nil, fmt.Errorf("while querying row %w", err)
+	}
+
+	return &book, nil
+}

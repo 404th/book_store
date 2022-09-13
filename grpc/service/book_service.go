@@ -24,20 +24,30 @@ func NewBookService(strg storage.StorageI, cfg config.Config, log logger.LoggerI
 	}
 }
 
-func (b *bookService) CreateBook(ctx context.Context, bs *bc.CreateBookRequest) (*bc.IDTracker, error) {
-	resp, err := b.strg.Book().CreateBook(ctx, bs)
+func (b *bookService) CreateBook(ctx context.Context, req *bc.CreateBookRequest) (*bc.IDTracker, error) {
+	resp, err := b.strg.Book().CreateBook(ctx, req)
 	if err != nil {
-		b.log.Error("CreateBook", logger.Any("req", bs), logger.Error(err))
+		b.log.Error("CreateBook", logger.Any("req", req), logger.Error(err))
 		return nil, err
 	}
 
 	return resp, nil
 }
 
-func (b *bookService) GetAllBooks(ctx context.Context, bs *bc.GetAllBooksRequest) (*bc.GetAllBooksResponse, error) {
-	resp, err := b.strg.Book().GetAllBooks(ctx, bs)
+func (b *bookService) GetAllBooks(ctx context.Context, req *bc.GetAllBooksRequest) (*bc.GetAllBooksResponse, error) {
+	resp, err := b.strg.Book().GetAllBooks(ctx, req)
 	if err != nil {
-		b.log.Error("GetAllBooks", logger.Any("req", bs), logger.Error(err))
+		b.log.Error("GetAllBooks", logger.Any("req", req), logger.Error(err))
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (b *bookService) GetBookByID(ctx context.Context, req *bc.GetBookByIDRequest) (*bc.Book, error) {
+	resp, err := b.strg.Book().GetBookByID(ctx, req)
+	if err != nil {
+		b.log.Error("GetBookByID", logger.Any("req", req), logger.Error(err))
 		return nil, err
 	}
 

@@ -6,13 +6,15 @@ option go_package="genproto/book_service";
 service BookService {
     rpc CreateBook(CreateBookRequest) returns (IDTracker) {}
     rpc GetAllBooks(GetAllBooksRequest) returns (GetAllBooksResponse) {}
+    rpc GetBookByID(GetBookByIDRequest) returns (Book) {}
 }
 
 message Book {
     string id = 1;
-    string author_id = 2;
-    string about = 3;
-    string isbn = 4;
+    string name = 2;
+    string author_id = 3;
+    string about = 4;
+    string isbn = 5;
 }
 
 message CreateBookRequest {
@@ -32,6 +34,11 @@ message GetAllBooksResponse {
     repeated Book books = 1;
     int32 count = 2;
 }
+
+message GetBookByIDRequest {
+    string id = 1;
+}
+
 
 message IDTracker {
     string id = 1;
