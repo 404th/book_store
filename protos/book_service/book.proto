@@ -5,6 +5,7 @@ option go_package="genproto/book_service";
 
 service BookService {
     rpc CreateBook(CreateBookRequest) returns (IDTracker) {}
+    rpc GetAllBooks(GetAllBooksRequest) returns (GetAllBooksResponse) {}
 }
 
 message Book {
@@ -19,6 +20,17 @@ message CreateBookRequest {
     string author_id = 2;
     string about = 3;
     string isbn = 4;
+}
+
+message GetAllBooksRequest {
+    int32 limit = 1;
+    int32 offset = 2;
+    string search = 3;
+}
+
+message GetAllBooksResponse {
+    repeated Book books = 1;
+    int32 count = 2;
 }
 
 message IDTracker {

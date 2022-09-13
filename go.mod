@@ -7,6 +7,7 @@ require (
 	github.com/google/uuid v1.1.2
 	github.com/jackc/pgx/v4 v4.17.2
 	github.com/joho/godotenv v1.4.0
+	github.com/lib/pq v1.10.2
 	github.com/spf13/cast v1.5.0
 	go.uber.org/zap v1.13.0
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90

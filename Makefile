@@ -20,10 +20,10 @@ gen-proto-module:
 	./scripts/gen_proto.sh ${CURRENT_DIR}
 
 migration-up:
-	migrate -path ./migrations/postgres -database 'postgres://postgres:secretpassword@0.0.0.0:3534/position_service?sslmode=disable' up
+	migrate -path ./migrations/postgres -database 'postgres://postgres:postgres@0.0.0.0:5050/book_store?sslmode=disable' up
 
 migration-down:
-	migrate -path ./migrations/postgres -database 'postgres://postgres:secretpassword@0.0.0.0:3534/position_service?sslmode=disable' down
+	migrate -path ./migrations/postgres -database 'postgres://postgres:postgres@0.0.0.0:5050/book_store?sslmode=disable' down
 
 build:
 	CGO_ENABLED=0 GOOS=linux go build -mod=vendor -a -installsuffix cgo -o ${CURRENT_DIR}/bin/${APP} ${APP_CMD_DIR}/main.go

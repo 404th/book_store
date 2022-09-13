@@ -6,6 +6,7 @@ import (
 	"github.com/404th/book_store/config"
 	"github.com/404th/book_store/storage"
 	"github.com/jackc/pgx/v4/pgxpool"
+	_ "github.com/lib/pq"
 )
 
 type PostgresStore struct {
