@@ -18,86 +18,86 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// BookSericeClient is the client API for BookSerice service.
+// BookServiceClient is the client API for BookService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type BookSericeClient interface {
+type BookServiceClient interface {
 	CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*IDTracker, error)
 }
 
-type bookSericeClient struct {
+type bookServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewBookSericeClient(cc grpc.ClientConnInterface) BookSericeClient {
-	return &bookSericeClient{cc}
+func NewBookServiceClient(cc grpc.ClientConnInterface) BookServiceClient {
+	return &bookServiceClient{cc}
 }
 
-func (c *bookSericeClient) CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*IDTracker, error) {
+func (c *bookServiceClient) CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*IDTracker, error) {
 	out := new(IDTracker)
-	err := c.cc.Invoke(ctx, "/book_service.BookSerice/CreateBook", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/book_service.BookService/CreateBook", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// BookSericeServer is the server API for BookSerice service.
-// All implementations must embed UnimplementedBookSericeServer
+// BookServiceServer is the server API for BookService service.
+// All implementations must embed UnimplementedBookServiceServer
 // for forward compatibility
-type BookSericeServer interface {
+type BookServiceServer interface {
 	CreateBook(context.Context, *CreateBookRequest) (*IDTracker, error)
-	mustEmbedUnimplementedBookSericeServer()
+	mustEmbedUnimplementedBookServiceServer()
 }
 
-// UnimplementedBookSericeServer must be embedded to have forward compatible implementations.
-type UnimplementedBookSericeServer struct {
+// UnimplementedBookServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedBookServiceServer struct {
 }
 
-func (UnimplementedBookSericeServer) CreateBook(context.Context, *CreateBookRequest) (*IDTracker, error) {
+func (UnimplementedBookServiceServer) CreateBook(context.Context, *CreateBookRequest) (*IDTracker, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateBook not implemented")
 }
-func (UnimplementedBookSericeServer) mustEmbedUnimplementedBookSericeServer() {}
+func (UnimplementedBookServiceServer) mustEmbedUnimplementedBookServiceServer() {}
 
-// UnsafeBookSericeServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to BookSericeServer will
+// UnsafeBookServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to BookServiceServer will
 // result in compilation errors.
-type UnsafeBookSericeServer interface {
-	mustEmbedUnimplementedBookSericeServer()
+type UnsafeBookServiceServer interface {
+	mustEmbedUnimplementedBookServiceServer()
 }
 
-func RegisterBookSericeServer(s grpc.ServiceRegistrar, srv BookSericeServer) {
-	s.RegisterService(&BookSerice_ServiceDesc, srv)
+func RegisterBookServiceServer(s grpc.ServiceRegistrar, srv BookServiceServer) {
+	s.RegisterService(&BookService_ServiceDesc, srv)
 }
 
-func _BookSerice_CreateBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _BookService_CreateBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateBookRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BookSericeServer).CreateBook(ctx, in)
+		return srv.(BookServiceServer).CreateBook(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/book_service.BookSerice/CreateBook",
+		FullMethod: "/book_service.BookService/CreateBook",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BookSericeServer).CreateBook(ctx, req.(*CreateBookRequest))
+		return srv.(BookServiceServer).CreateBook(ctx, req.(*CreateBookRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// BookSerice_ServiceDesc is the grpc.ServiceDesc for BookSerice service.
+// BookService_ServiceDesc is the grpc.ServiceDesc for BookService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var BookSerice_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "book_service.BookSerice",
-	HandlerType: (*BookSericeServer)(nil),
+var BookService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "book_service.BookService",
+	HandlerType: (*BookServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "CreateBook",
-			Handler:    _BookSerice_CreateBook_Handler,
+			Handler:    _BookService_CreateBook_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
