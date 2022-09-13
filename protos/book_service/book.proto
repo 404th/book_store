@@ -1,0 +1,26 @@
+syntax="proto3";
+
+package book_service;
+option go_package="genproto/book_service";
+
+service BookSerice {
+    rpc CreateBook(CreateBookRequest) returns (IDTracker) {}
+}
+
+message Book {
+    string id = 1;
+    string author = 2;
+    string about = 3;
+    string isbn = 4;
+}
+
+message CreateBookRequest {
+    string name = 1;
+    string author_id = 2;
+    string about = 3;
+    string isbn = 4;
+}
+
+message IDTracker {
+    string id = 1;
+}
