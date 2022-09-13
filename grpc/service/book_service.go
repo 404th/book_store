@@ -33,3 +33,13 @@ func (b *bookService) CreateBook(ctx context.Context, bs *bc.CreateBookRequest) 
 
 	return resp, nil
 }
+
+func (b *bookService) GetAllBooks(ctx context.Context, bs *bc.GetAllBooksRequest) (*bc.GetAllBooksResponse, error) {
+	resp, err := b.strg.Book().GetAllBooks(ctx, bs)
+	if err != nil {
+		b.log.Error("GetAllBooks", logger.Any("req", bs), logger.Error(err))
+		return nil, err
+	}
+
+	return resp, nil
+}

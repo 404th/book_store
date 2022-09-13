@@ -6,6 +6,7 @@ import (
 
 	"github.com/404th/book_store/genproto/book_service"
 	bs "github.com/404th/book_store/genproto/book_service"
+	"github.com/404th/book_store/pkg/helper"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -47,4 +48,66 @@ func (br *bookRepo) CreateBook(ctx context.Context, cr *book_service.CreateBookR
 	return &bs.IDTracker{
 		Id: id,
 	}, nil
+}
+
+func (br *bookRepo) GetAllBooks(ctx context.Context, req *bs.GetAllBooksRequest) (*bs.GetAllBooksResponse, error) {
+	var (
+		resp   bs.GetAllBooksResponse
+		err    error
+		filter string
+		params = make(map[string]interface{})
+	)
+
+	if req.GetLimit() == 0 {
+		req.Limit = 10
+	}
+
+	if req.GetSearch() != "" {
+		filter += " AND name ILIKE '%' || :search || '%' "
+		params["search"] = req.Search
+	}
+
+	countQuery := `SELECT count(1) FROM books WHERE true ` + filter
+
+	q, arr := helper.ReplaceQueryParams(countQuery, params)
+	err = br.db.QueryRow(ctx, q, arr...).Scan(
+		&resp.Count,
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("error while scanning count %w", err)
+	}
+
+	query := `SELECT
+				id, name, author_id, isbn
+			FROM books
+			WHERE true` + filter
+
+	query += " LIMIT :limit OFFSET :offset"
+	params["limit"] = req.Limit
+	params["offset"] = req.Offset
+
+	q, arr = helper.ReplaceQueryParams(query, params)
+	rows, err := br.db.Query(ctx, q, arr...)
+	if err != nil {
+		return nil, fmt.Errorf("error while getting rows %w", err)
+	}
+
+	for rows.Next() {
+		var bk bs.Book
+
+		err = rows.Scan(
+			&bk.Id,
+			&bk.About,
+			&bk.Isbn,
+			&bk.AuthorId,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("error while scanning book err: %w", err)
+		}
+
+		resp.Books = append(resp.Books, &bk)
+	}
+
+	return &resp, nil
 }

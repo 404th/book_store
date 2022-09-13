@@ -3,7 +3,7 @@ package storage
 import (
 	"context"
 
-	"github.com/404th/book_store/genproto/book_service"
+	bs "github.com/404th/book_store/genproto/book_service"
 )
 
 type StorageI interface {
@@ -11,5 +11,6 @@ type StorageI interface {
 }
 
 type BookI interface {
-	CreateBook(context.Context, *book_service.CreateBookRequest) (*book_service.IDTracker, error)
+	CreateBook(context.Context, *bs.CreateBookRequest) (*bs.IDTracker, error)
+	GetAllBooks(context.Context, *bs.GetAllBooksRequest) (*bs.GetAllBooksResponse, error)
 }
