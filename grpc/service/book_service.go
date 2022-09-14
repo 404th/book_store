@@ -63,3 +63,13 @@ func (b *bookService) UpdateBook(ctx context.Context, req *bc.UpdateBookRequest)
 
 	return resp, nil
 }
+
+func (b *bookService) DeleteBook(ctx context.Context, req *bc.DeleteBookRequest) (*bc.IDTracker, error) {
+	resp, err := b.strg.Book().DeleteBook(ctx, req)
+	if err != nil {
+		b.log.Error("DeleteBook", logger.Any("req", req), logger.Error(err))
+		return nil, err
+	}
+
+	return resp, nil
+}
