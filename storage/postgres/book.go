@@ -137,3 +137,63 @@ func (br *bookRepo) GetBookByID(ctx context.Context, req *bs.GetBookByIDRequest)
 
 	return &book, nil
 }
+
+func (br *bookRepo) UpdateBook(ctx context.Context, req *bs.UpdateBookRequest) (*bs.IDTracker, error) {
+	var (
+		body         string
+		body_changes bool
+		params       = make(map[string]interface{})
+	)
+
+	body = `UPDATE books SET`
+
+	if req.GetName() != "" {
+		body += `name = :name `
+		params["name"] = req.GetName()
+		body_changes = true
+	}
+
+	if req.GetAbout() != "" {
+		if req.GetName() != "" {
+			body += ","
+		}
+		body += `about = :about `
+		params["about"] = req.GetAbout()
+		body_changes = true
+	}
+
+	if req.GetIsbn() != "" {
+		if req.GetName() != "" || req.GetAbout() != "" {
+			body += ","
+		}
+		body += "isbn = :isbn"
+		params["isbn"] = req.GetIsbn()
+		body_changes = true
+	}
+
+	if req.GetAuthorId() != "" {
+		if req.GetName() != "" || req.GetAbout() != "" || req.GetIsbn() != "" {
+			body += ","
+		}
+		body += "author_id = :author_id"
+		params["author_id"] = req.GetAuthorId()
+		body_changes = true
+	}
+
+	// TODO: 1 => checking if author exists
+
+	if body_changes {
+		body += " WHERE id=:id;"
+		params["id"] = req.GetId()
+
+		q, arr := helper.ReplaceQueryParams(body, params)
+		_, err := br.db.Exec(ctx, q, arr...)
+		if err != nil {
+			return nil, fmt.Errorf("error while getting rows %w", err)
+		}
+	}
+
+	return &bs.IDTracker{
+		Id: req.GetId(),
+	}, nil
+}

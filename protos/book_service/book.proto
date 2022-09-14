@@ -7,6 +7,7 @@ service BookService {
     rpc CreateBook(CreateBookRequest) returns (IDTracker) {}
     rpc GetAllBooks(GetAllBooksRequest) returns (GetAllBooksResponse) {}
     rpc GetBookByID(GetBookByIDRequest) returns (Book) {}
+    rpc UpdateBook(UpdateBookRequest) returns (IDTracker) {}
 }
 
 message Book {
@@ -39,6 +40,13 @@ message GetBookByIDRequest {
     string id = 1;
 }
 
+message UpdateBookRequest {
+    string id = 1;
+    string name = 2;
+    string author_id = 3;
+    string about = 4;
+    string isbn = 5;
+}
 
 message IDTracker {
     string id = 1;
