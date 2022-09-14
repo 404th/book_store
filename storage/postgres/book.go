@@ -79,7 +79,7 @@ func (br *bookRepo) GetAllBooks(ctx context.Context, req *bs.GetAllBooksRequest)
 	}
 
 	query := `SELECT
-				id, name, author_id, isbn
+				id, name, about, author_id, isbn
 			FROM books
 			WHERE true` + filter
 
@@ -98,6 +98,7 @@ func (br *bookRepo) GetAllBooks(ctx context.Context, req *bs.GetAllBooksRequest)
 
 		err = rows.Scan(
 			&bk.Id,
+			&bk.Name,
 			&bk.About,
 			&bk.Isbn,
 			&bk.AuthorId,
@@ -117,17 +118,16 @@ func (br *bookRepo) GetBookByID(ctx context.Context, req *bs.GetBookByIDRequest)
 		book bs.Book
 	)
 	query := `
-		SELECT (
+		SELECT
 			id,
 			name,
 			author_id,
 			about,
 			isbn
-		)
-			FROM
-				books
-			WHERE
-				id=$1;
+		FROM
+			books
+		WHERE
+			id=$1;
 	`
 
 	row := br.db.QueryRow(ctx, query, req.GetId())
