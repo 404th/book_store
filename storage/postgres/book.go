@@ -145,7 +145,7 @@ func (br *bookRepo) UpdateBook(ctx context.Context, req *bs.UpdateBookRequest) (
 		params       = make(map[string]interface{})
 	)
 
-	body = `UPDATE books SET`
+	body = `UPDATE books SET `
 
 	if req.GetName() != "" {
 		body += `name = :name `

@@ -53,3 +53,13 @@ func (b *bookService) GetBookByID(ctx context.Context, req *bc.GetBookByIDReques
 
 	return resp, nil
 }
+
+func (b *bookService) UpdateBook(ctx context.Context, req *bc.UpdateBookRequest) (*bc.IDTracker, error) {
+	resp, err := b.strg.Book().UpdateBook(ctx, req)
+	if err != nil {
+		b.log.Error("UpdateBook", logger.Any("req", req), logger.Error(err))
+		return nil, err
+	}
+
+	return resp, nil
+}
