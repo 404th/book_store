@@ -197,3 +197,21 @@ func (br *bookRepo) UpdateBook(ctx context.Context, req *bs.UpdateBookRequest) (
 		Id: req.GetId(),
 	}, nil
 }
+
+func (br *bookRepo) DeleteBook(ctx context.Context, req *bs.DeleteBookRequest) (*bs.IDTracker, error) {
+	query := `
+		DELETE FROM
+			books
+		WHERE
+			id = $1
+		;
+	`
+
+	if _, err := br.db.Exec(ctx, query, req.GetId()); err != nil {
+		return nil, fmt.Errorf("error while deleting book %w", err)
+	}
+
+	return &bs.IDTracker{
+		Id: req.GetId(),
+	}, nil
+}

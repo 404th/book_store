@@ -15,4 +15,5 @@ type BookI interface {
 	GetAllBooks(context.Context, *bs.GetAllBooksRequest) (*bs.GetAllBooksResponse, error)
 	GetBookByID(ctx context.Context, req *bs.GetBookByIDRequest) (*bs.Book, error)
 	UpdateBook(ctx context.Context, req *bs.UpdateBookRequest) (*bs.IDTracker, error)
+	DeleteBook(ctx context.Context, req *bs.DeleteBookRequest) (*bs.IDTracker, error)
 }

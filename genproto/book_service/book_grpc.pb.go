@@ -26,6 +26,7 @@ type BookServiceClient interface {
 	GetAllBooks(ctx context.Context, in *GetAllBooksRequest, opts ...grpc.CallOption) (*GetAllBooksResponse, error)
 	GetBookByID(ctx context.Context, in *GetBookByIDRequest, opts ...grpc.CallOption) (*Book, error)
 	UpdateBook(ctx context.Context, in *UpdateBookRequest, opts ...grpc.CallOption) (*IDTracker, error)
+	DeleteBook(ctx context.Context, in *DeleteBookRequest, opts ...grpc.CallOption) (*IDTracker, error)
 }
 
 type bookServiceClient struct {
@@ -72,6 +73,15 @@ func (c *bookServiceClient) UpdateBook(ctx context.Context, in *UpdateBookReques
 	return out, nil
 }
 
+func (c *bookServiceClient) DeleteBook(ctx context.Context, in *DeleteBookRequest, opts ...grpc.CallOption) (*IDTracker, error) {
+	out := new(IDTracker)
+	err := c.cc.Invoke(ctx, "/book_service.BookService/DeleteBook", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BookServiceServer is the server API for BookService service.
 // All implementations must embed UnimplementedBookServiceServer
 // for forward compatibility
@@ -80,6 +90,7 @@ type BookServiceServer interface {
 	GetAllBooks(context.Context, *GetAllBooksRequest) (*GetAllBooksResponse, error)
 	GetBookByID(context.Context, *GetBookByIDRequest) (*Book, error)
 	UpdateBook(context.Context, *UpdateBookRequest) (*IDTracker, error)
+	DeleteBook(context.Context, *DeleteBookRequest) (*IDTracker, error)
 	mustEmbedUnimplementedBookServiceServer()
 }
 
@@ -98,6 +109,9 @@ func (UnimplementedBookServiceServer) GetBookByID(context.Context, *GetBookByIDR
 }
 func (UnimplementedBookServiceServer) UpdateBook(context.Context, *UpdateBookRequest) (*IDTracker, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateBook not implemented")
+}
+func (UnimplementedBookServiceServer) DeleteBook(context.Context, *DeleteBookRequest) (*IDTracker, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteBook not implemented")
 }
 func (UnimplementedBookServiceServer) mustEmbedUnimplementedBookServiceServer() {}
 
@@ -184,6 +198,24 @@ func _BookService_UpdateBook_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BookService_DeleteBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteBookRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BookServiceServer).DeleteBook(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/book_service.BookService/DeleteBook",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BookServiceServer).DeleteBook(ctx, req.(*DeleteBookRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BookService_ServiceDesc is the grpc.ServiceDesc for BookService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +238,10 @@ var BookService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateBook",
 			Handler:    _BookService_UpdateBook_Handler,
+		},
+		{
+			MethodName: "DeleteBook",
+			Handler:    _BookService_DeleteBook_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
