@@ -14,14 +14,12 @@ service BookService {
 message Book {
     string id = 1;
     string name = 2;
-    string author_id = 3;
     string about = 4;
     string isbn = 5;
 }
 
 message CreateBookRequest {
     string name = 1;
-    string author_id = 2;
     string about = 3;
     string isbn = 4;
 }
@@ -44,7 +42,6 @@ message GetBookByIDRequest {
 message UpdateBookRequest {
     string id = 1;
     string name = 2;
-    string author_id = 3;
     string about = 4;
     string isbn = 5;
 }

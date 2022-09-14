@@ -27,21 +27,19 @@ func (br *bookRepo) CreateBook(ctx context.Context, cr *book_service.CreateBookR
 			INSERT INTO books (
 				id,
 				name,
-				author_id,
 				about,
 				isbn
 			) VALUES (
 				$1,
 				$2,
 				$3,
-				$4,
-				$5
+				$4
 			);
 		`
 
 	id := uuid.New().String()
 
-	if _, err := br.db.Exec(ctx, query, id, cr.Name, cr.AuthorId, cr.About, cr.Isbn); err != nil {
+	if _, err := br.db.Exec(ctx, query, id, cr.Name, cr.About, cr.Isbn); err != nil {
 		return nil, fmt.Errorf("error while creating book: %w", err)
 	}
 
@@ -79,7 +77,7 @@ func (br *bookRepo) GetAllBooks(ctx context.Context, req *bs.GetAllBooksRequest)
 	}
 
 	query := `SELECT
-				id, name, about, author_id, isbn
+				id, name, about, isbn
 			FROM books
 			WHERE true` + filter
 
@@ -101,7 +99,6 @@ func (br *bookRepo) GetAllBooks(ctx context.Context, req *bs.GetAllBooksRequest)
 			&bk.Name,
 			&bk.About,
 			&bk.Isbn,
-			&bk.AuthorId,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("error while scanning book err: %w", err)
@@ -121,7 +118,6 @@ func (br *bookRepo) GetBookByID(ctx context.Context, req *bs.GetBookByIDRequest)
 		SELECT
 			id,
 			name,
-			author_id,
 			about,
 			isbn
 		FROM
@@ -131,7 +127,7 @@ func (br *bookRepo) GetBookByID(ctx context.Context, req *bs.GetBookByIDRequest)
 	`
 
 	row := br.db.QueryRow(ctx, query, req.GetId())
-	if err := row.Scan(&book.Id, &book.Name, &book.AuthorId, &book.About, &book.Isbn); err != nil {
+	if err := row.Scan(&book.Id, &book.Name, &book.About, &book.Isbn); err != nil {
 		return nil, fmt.Errorf("while querying row %w", err)
 	}
 
@@ -170,17 +166,6 @@ func (br *bookRepo) UpdateBook(ctx context.Context, req *bs.UpdateBookRequest) (
 		params["isbn"] = req.GetIsbn()
 		body_changes = true
 	}
-
-	if req.GetAuthorId() != "" {
-		if req.GetName() != "" || req.GetAbout() != "" || req.GetIsbn() != "" {
-			body += ","
-		}
-		body += "author_id = :author_id"
-		params["author_id"] = req.GetAuthorId()
-		body_changes = true
-	}
-
-	// TODO: 1 => checking if author exists
 
 	if body_changes {
 		body += " WHERE id=:id;"
